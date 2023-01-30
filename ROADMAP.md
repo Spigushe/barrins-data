@@ -1,5 +1,7 @@
 # ROADMAP
 
+The project will be sustainable and scalable in every aspects
+
 ## Backend
 - [ ] Handle most of deckbuilding websites URL
 - [ ] Handle pairings (Aetherhub scrapping maybe)
