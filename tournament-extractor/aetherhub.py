@@ -163,17 +163,16 @@ def rounds(tournament, aetherhub):
         for table in round:
             player_1 = table["Player 1"]
             player_2 = table["Player 2"]
-            result = table["Result"]
 
-            if player_1 != "BYE":
+            if player_2 != "BYE":
                 p1 = tournament["players"][player_1]
                 p1["opponents"].append(player_2)
                 p1["rounds"].append(
                     (
                         "W"
-                        if table["Result"][0] == "2"
+                        if int(table["Result"][0]) > int(table["Result"][4])
                         else "D"
-                        if (table["Result"][0] == table["Result"][4])
+                        if int(table["Result"][0]) == int(table["Result"][4])
                         else "L"
                     )
                     + " "
@@ -186,9 +185,9 @@ def rounds(tournament, aetherhub):
                 p2["rounds"].append(
                     (
                         "L"
-                        if table["Result"][0] == "2"
+                        if int(table["Result"][0]) > int(table["Result"][4])
                         else "D"
-                        if (table["Result"][0] == table["Result"][4])
+                        if int(table["Result"][0]) == int(table["Result"][4])
                         else "W"
                     )
                     + " "
