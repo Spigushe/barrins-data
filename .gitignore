@@ -1,3 +1,6 @@
+.vscode
 venv
 __pycache__
 *.json
+!08-02-2023 Tournoi des Chroniques 15859.json
+*.pyc
