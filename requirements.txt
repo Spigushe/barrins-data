@@ -1,0 +1,12 @@
+black
+isort
+flake8
+pylint
+
+requests
+bs4
+numpy
+tqdm
+scikit-learn
+numpy
+matplotlib

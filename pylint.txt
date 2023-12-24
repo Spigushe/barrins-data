@@ -1,0 +1,57 @@
+************* Module mtgdc_clustering
+mtgdc_clustering/__init__.py:1:0: C0114: Missing module docstring (missing-module-docstring)
+mtgdc_clustering/__init__.py:12:0: C0115: Missing class docstring (missing-class-docstring)
+mtgdc_clustering/__init__.py:13:0: W0613: Unused argument 'kwargs' (unused-argument)
+mtgdc_clustering/__init__.py:12:0: R0903: Too few public methods (0/2) (too-few-public-methods)
+mtgdc_clustering/__init__.py:32:0: C0115: Missing class docstring (missing-class-docstring)
+mtgdc_clustering/__init__.py:44:14: E1101: Instance of 'ACP' has no 'labels' member (no-member)
+mtgdc_clustering/__init__.py:32:0: R0903: Too few public methods (0/2) (too-few-public-methods)
+mtgdc_clustering/__init__.py:58:0: C0115: Missing class docstring (missing-class-docstring)
+mtgdc_clustering/__init__.py:66:4: C0116: Missing function or method docstring (missing-function-docstring)
+mtgdc_clustering/__init__.py:97:4: C0116: Missing function or method docstring (missing-function-docstring)
+mtgdc_clustering/__init__.py:108:0: C0115: Missing class docstring (missing-class-docstring)
+mtgdc_clustering/__init__.py:138:4: C0116: Missing function or method docstring (missing-function-docstring)
+mtgdc_clustering/__init__.py:165:4: C0116: Missing function or method docstring (missing-function-docstring)
+************* Module mtgdc_clustering.__main__
+mtgdc_clustering/__main__.py:1:0: C0114: Missing module docstring (missing-module-docstring)
+mtgdc_clustering/__main__.py:31:4: W0105: String statement has no effect (pointless-string-statement)
+mtgdc_clustering/__main__.py:3:0: W0611: Unused datetime imported from datetime (unused-import)
+mtgdc_clustering/__main__.py:8:0: W0611: Unused import OpticsACP (unused-import)
+
+------------------------------------------------------------------
+Your code has been rated at 8.38/10 (previous run: 9.30/10, -0.91)
+
+************* Module mtgdc_decklists
+mtgdc_decklists/__init__.py:177:0: C0301: Line too long (256/100) (line-too-long)
+mtgdc_decklists/__init__.py:1:0: C0114: Missing module docstring (missing-module-docstring)
+mtgdc_decklists/__init__.py:9:0: C0116: Missing function or method docstring (missing-function-docstring)
+mtgdc_decklists/__init__.py:16:0: C0115: Missing class docstring (missing-class-docstring)
+mtgdc_decklists/__init__.py:21:4: C0116: Missing function or method docstring (missing-function-docstring)
+mtgdc_decklists/__init__.py:63:4: C0116: Missing function or method docstring (missing-function-docstring)
+mtgdc_decklists/__init__.py:69:4: C0116: Missing function or method docstring (missing-function-docstring)
+mtgdc_decklists/__init__.py:79:0: C0115: Missing class docstring (missing-class-docstring)
+mtgdc_decklists/__init__.py:85:4: C0116: Missing function or method docstring (missing-function-docstring)
+mtgdc_decklists/__init__.py:105:4: C0116: Missing function or method docstring (missing-function-docstring)
+mtgdc_decklists/__init__.py:114:4: C0116: Missing function or method docstring (missing-function-docstring)
+mtgdc_decklists/__init__.py:126:4: C0116: Missing function or method docstring (missing-function-docstring)
+mtgdc_decklists/__init__.py:136:15: C0209: Formatting a regular string which could be an f-string (consider-using-f-string)
+mtgdc_decklists/__init__.py:144:19: W0212: Access to a protected member _legend of a client class (protected-access)
+mtgdc_decklists/__init__.py:144:50: W0212: Access to a protected member _styles of a client class (protected-access)
+mtgdc_decklists/__init__.py:154:8: C0200: Consider using enumerate instead of iterating with range and len (consider-using-enumerate)
+mtgdc_decklists/__init__.py:156:12: C0200: Consider using enumerate instead of iterating with range and len (consider-using-enumerate)
+mtgdc_decklists/__init__.py:176:8: R1705: Unnecessary "elif" after "return", remove the leading "el" from "elif" (no-else-return)
+
+------------------------------------------------------------------
+Your code has been rated at 8.20/10 (previous run: 9.73/10, -1.53)
+
+************* Module mtgdc_scrapper
+mtgdc_scrapper/__init__.py:2:0: W0105: String statement has no effect (pointless-string-statement)
+mtgdc_scrapper/__init__.py:3:0: C0413: Import "import re" should be placed at the top of the module (wrong-import-position)
+mtgdc_scrapper/__init__.py:4:0: C0413: Import "from threading import Lock, Thread" should be placed at the top of the module (wrong-import-position)
+mtgdc_scrapper/__init__.py:5:0: C0413: Import "from typing import List" should be placed at the top of the module (wrong-import-position)
+mtgdc_scrapper/__init__.py:7:0: C0413: Import "import requests" should be placed at the top of the module (wrong-import-position)
+mtgdc_scrapper/__init__.py:8:0: C0413: Import "from bs4 import BeautifulSoup" should be placed at the top of the module (wrong-import-position)
+mtgdc_scrapper/__init__.py:11:0: R0902: Too many instance attributes (9/7) (too-many-instance-attributes)
+
+-----------------------------------
+Your code has been rated at 9.60/10
