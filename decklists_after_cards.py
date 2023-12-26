@@ -4,10 +4,10 @@ from mtgdc_aggregator import Aggregator
 from mtgdc_clustering import KMeansACP
 from mtgdc_decklists import CompareLists, ImportDecks
 
-COMMANDER = "Kroxa, Titan of Death's Hunger"
+CARDS = ["Underworld Breach", "Stitcher's Supplier"]
 
 if __name__ == "__main__":
-    path = "".join(filter(str.isalpha, COMMANDER.lower()))
+    path = "".join(filter(str.isalpha, "".join(CARDS).lower()))
 
     if not os.path.isdir(path):
         os.mkdir(path)
@@ -18,7 +18,7 @@ if __name__ == "__main__":
 
     print(".", "Loading decks")
     liste_decks = ImportDecks.from_directory("./mtgdc_decklists/decklists")
-    liste_decks.load_decks(commander=[COMMANDER])
+    liste_decks.load_decks(cards=CARDS)
     print("\t", f"{len(liste_decks.decklists)} decks loaded")
 
     print(".", "PCA analysis and KMeans clustering")

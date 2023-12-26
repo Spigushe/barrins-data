@@ -161,3 +161,5 @@ cython_debug/
 
 # Files for testing
 mtgdc_carddata/*.json*
+*/
+!mtgdc_*/
