@@ -1,9 +1,9 @@
 """Fichier pour gérer la logique des decks."""
 """Gestion de la logique des tournois."""
-import re
+import glob
 import json
 import os
-import glob
+import re
 from threading import Lock, Thread
 from typing import List
 
@@ -283,6 +283,7 @@ class Tournoi:
         response = sorted(response, key=lambda i: int(i["deck_id"]))
 
         return response
+
 
 def get_first_id(path: str) -> str:
     """Fonction qui retour le premier id à exporter."""

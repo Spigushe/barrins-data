@@ -7,6 +7,5 @@ une vue plus précise des archétypes joués avec
 """
 from mtgdc_scrapper import extraction
 
-
 if __name__ == "__main__":
     extraction()
