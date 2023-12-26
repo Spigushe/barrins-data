@@ -5,19 +5,20 @@ import re
 from datetime import datetime, timedelta
 
 import requests
+from datetime import datetime
 
-
-class CardDatabase:
+class MTGJSON:
     def __init__(self) -> None:
-        self._mtgjson = "https://mtgjson.com/api/v5/AtomicCards.json.gz"
-        self._filepath = "mtgdc_carddata/AtomicCards.json.gz"
+        self.allcards = "https://mtgjson.com/api/v5/AtomicCards.json.gz"
+        self.allsets  = "https://mtgjson.com/api/v5/SetList.json.gz"
 
-        if not os.path.isfile(self._filepath) or self._file_older_than(
-            self._filepath, 7
-        ):
-            self._download(self._mtgjson, self._filepath)
+    @staticmethod
+    def control(wanted:str, path:str):
+        mtgjson = MTGJSON()
+        url = mtgjson.allcards if wanted == "cards" else mtgjson.allsets if wanted == "sets" else None
 
-        self.atomic_cards = json.load(gzip.open(self._filepath))["data"]
+        if not os.path.isfile(path) or mtgjson._file_older_than(path, 7):
+            mtgjson._download(url, path)
 
     def _file_older_than(self, filepath: str, age: int):
         file_timestamp = os.path.getmtime(filepath)
@@ -30,13 +31,22 @@ class CardDatabase:
         with open(filepath, "wb") as file:
             file.write(response.content)
 
+class CardDatabase:
+    def __init__(self) -> None:
+        self._filepath = "mtgdc_carddata/AtomicCards.json.gz"
+        MTGJSON.control("cards", self._filepath)
+        self.atomic_cards = json.load(gzip.open(self._filepath))["data"]
+        self.sets = SetDatabase()
+
     def card(self, card_name) -> dict:
         if card_name in self.atomic_cards.keys():
             return self.atomic_cards[card_name][0]
 
         if " / " in card_name:
             card_name = re.sub(" / ", " // ", card_name)
+
         keys = [key for key in self.atomic_cards.keys() if key.startswith(card_name)]
+
         if len(keys) == 0:
             card_name = re.sub(" // ", " ", card_name)
             keys = [
@@ -52,7 +62,22 @@ class CardDatabase:
                 ", ".join(keys),
             )
             print(keys[0], "est retournée par défaut")
+
         return self.atomic_cards[keys[0]][0]
+
+
+class SetDatabase:
+    def __init__(self) -> None:
+        self._filepath = "mtgdc_carddata/AllSets.json.gz"
+        MTGJSON.control("sets", self._filepath)
+        json_file = json.load(gzip.open(self._filepath))["data"]
+
+        self.allsets = {}
+        for set in json_file:
+            self.allsets[set["code"]] = set
+
+    def set(self, code):
+        return self.allsets[code]
 
 
 class DecklistBuilder:

@@ -6,3 +6,6 @@ update:
 
 scrap:
 	python -m mtgdc_scrapper
+
+card-data:
+	python -m mtgdc_carddata
