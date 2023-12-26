@@ -54,6 +54,7 @@ from itertools import combinations
 from tqdm import tqdm
 
 from mtgdc_banlist import BanlistCompiler
+from mtgdc_carddata import DecklistBuilder
 
 
 class Aggregator:
@@ -151,10 +152,11 @@ class Aggregator:
             f"Ordre {self.ordre}",
             f"Score: {self.robustesse:.4f}",
             "----------",
+            DecklistBuilder.build_deck(self.decklist),
         ]
 
         with open(o_name, "+w", encoding="utf-8") as file:
-            file.write("\n".join(sortie + self.decklist))
+            file.write("\n".join(sortie))
 
     def _calculate_ranks(self) -> dict:
         """Calculate ranks for cards based on combination frequencies.
@@ -190,7 +192,7 @@ class Aggregator:
         Returns:
             list: A list of strings representing the decklist.
         """
-        return Aggregator.concatenate(
+        return Counter(
             [Aggregator.remove_numeric_suffix(card) for card in self.collective]
         )
 
