@@ -5,17 +5,23 @@ import re
 from datetime import datetime, timedelta
 
 import requests
-from datetime import datetime
+
 
 class MTGJSON:
     def __init__(self) -> None:
         self.allcards = "https://mtgjson.com/api/v5/AtomicCards.json.gz"
-        self.allsets  = "https://mtgjson.com/api/v5/SetList.json.gz"
+        self.allsets = "https://mtgjson.com/api/v5/SetList.json.gz"
 
     @staticmethod
-    def control(wanted:str, path:str):
+    def control(wanted: str, path: str):
         mtgjson = MTGJSON()
-        url = mtgjson.allcards if wanted == "cards" else mtgjson.allsets if wanted == "sets" else None
+        url = (
+            mtgjson.allcards
+            if wanted == "cards"
+            else mtgjson.allsets
+            if wanted == "sets"
+            else None
+        )
 
         if not os.path.isfile(path) or mtgjson._file_older_than(path, 7):
             mtgjson._download(url, path)
@@ -30,6 +36,7 @@ class MTGJSON:
         response = requests.get(link, stream=True)
         with open(filepath, "wb") as file:
             file.write(response.content)
+
 
 class CardDatabase:
     def __init__(self) -> None:
