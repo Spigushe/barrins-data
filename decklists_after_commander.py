@@ -4,11 +4,13 @@ from mtgdc_aggregator import Aggregator
 from mtgdc_clustering import KMeansACP
 from mtgdc_decklists import CompareLists, ImportDecks
 
-COMMANDER = "Kroxa, Titan of Death's Hunger"
+COMMANDER = "Sheoldred, the Apocalypse"
 
 if __name__ == "__main__":
-    path = "".join(filter(str.isalpha, COMMANDER.lower()))
+    path = "output/" + "".join(filter(str.isalpha, COMMANDER.lower()))
 
+    if not os.path.isdir("output"):
+        os.mkdir("output")
     if not os.path.isdir(path):
         os.mkdir(path)
     else:
