@@ -49,15 +49,17 @@ class ImportDecks:
                         (int(card.split(" ")[0]), card.split(" ", maxsplit=1)[1])
                         for card in deck["decklist"]
                     ]
-                    self.decks.append(
-                        {
-                            "deck_id": deck["deck_id"],
-                            "date": tournoi_date,
-                            "decklist": tmp,
-                            "commander": czone,
-                            # "cardlist": [card for (_, card) in tmp],
-                        }
-                    )
+                    if not any(["Unknown Card" in card for (_, card) in tmp]):
+                        self.decks.append(
+                            {
+                                "tournament_id": tournoi["id"],
+                                "deck_id": deck["deck_id"],
+                                "date": tournoi_date,
+                                "decklist": tmp,
+                                "commander": czone,
+                                # "cardlist": [card for (_, card) in tmp],
+                            }
+                        )
 
     @staticmethod
     def from_directory(directory_path):
