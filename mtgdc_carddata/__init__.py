@@ -49,6 +49,8 @@ class CardDatabase:
         if card_name in self.atomic_cards.keys():
             return self.atomic_cards[card_name][0]
 
+        card_name = re.sub(r'(?<!\s)/(?!\s)', ' / ', card_name)
+
         if " / " in card_name:
             card_name = re.sub(" / ", " // ", card_name)
 
@@ -72,6 +74,8 @@ class CardDatabase:
 
         return self.atomic_cards[keys[0]][0]
 
+    def firstprint(self, card_name) -> datetime:
+        return datetime.strptime(self.sets.set(self.card(card_name)["firstPrinting"])["releaseDate"], "%Y-%m-%d")
 
 class SetDatabase:
     def __init__(self) -> None:
