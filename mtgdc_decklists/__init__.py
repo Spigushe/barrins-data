@@ -20,7 +20,8 @@ class ImportDecks:
 
     def load_decks(
         self,
-        date_from: datetime = datetime(1993, 8, 5),
+        # date_from: datetime = datetime(1993, 8, 5), # Limited Edition Alpha Release
+        date_from: datetime = datetime(2016, 11, 11),  # 20PV official date change
         date_to: datetime = datetime.now(),
         **kwargs,
     ) -> None:
