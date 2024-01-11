@@ -5,6 +5,7 @@ import re
 from datetime import datetime, timedelta
 
 import requests
+from unidecode import unidecode
 
 
 class MTGJSON:
@@ -43,42 +44,36 @@ class CardDatabase:
         self._filepath = "mtgdc_carddata/AtomicCards.json.gz"
         MTGJSON.control("cards", self._filepath)
         self.atomic_cards = json.load(gzip.open(self._filepath))["data"]
+        self._clean_keys = {
+            self._remove_accents(card): card for card in self.atomic_cards.keys()
+        }
         self.sets = SetDatabase()
 
     def card(self, card_name) -> dict:
-        if card_name in self.atomic_cards.keys():
-            return self.atomic_cards[card_name][0]
+        card_name = self._remove_accents(card_name)
 
-        card_name = re.sub(r"(?<!\s)/(?!\s)", " / ", card_name)
+        if card_name in self._clean_keys.keys():
+            return self.atomic_cards[self._clean_keys[card_name]][0]
 
-        if " / " in card_name:
-            card_name = re.sub(" / ", " // ", card_name)
+        possible_keys = [
+            value
+            for key, value in self._clean_keys.items()
+            if key.startswith(card_name) and " // " in value
+        ]
 
-        keys = [key for key in self.atomic_cards.keys() if key.startswith(card_name)]
+        if len(possible_keys) == 1:
+            return self.atomic_cards[possible_keys[0]][0]
 
-        if len(keys) == 0:
-            card_name = re.sub(" // ", " ", card_name)
-            keys = [
-                key for key in self.atomic_cards.keys() if key.startswith(card_name)
-            ]
-            if len(keys) == 0:
-                print(card_name)
-
-        if len(keys) > 1:
-            print(
-                card_name,
-                "n'est pas une entrée unique. Possibilités uniques:",
-                ", ".join(keys),
-            )
-            print(keys[0], "est retournée par défaut")
-
-        return self.atomic_cards[keys[0]][0]
+        return {"message": "Card not found"}
 
     def firstprint(self, card_name) -> datetime:
         return datetime.strptime(
             self.sets.set(self.card(card_name)["firstPrinting"])["releaseDate"],
             "%Y-%m-%d",
         )
+
+    def _remove_accents(self, input_str):
+        return "".join(char for char in unidecode(input_str) if char.isalpha()).lower()
 
 
 class SetDatabase:

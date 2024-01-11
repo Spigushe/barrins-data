@@ -30,6 +30,12 @@ if __name__ == "__main__":
             database.card("Lurrus of the Dream-Den"), file, ensure_ascii=False, indent=4
         )
 
+    with open("mtgdc_carddata/sheoldred.json", "w", encoding="utf-8") as file:
+        json.dump(database.card("Sheoldred"), file, ensure_ascii=False, indent=4)
+
+    with open("mtgdc_carddata/fireice.json", "w", encoding="utf-8") as file:
+        json.dump(database.card("Fire / Ice"), file, ensure_ascii=False, indent=4)
+
     with open("mtgdc_carddata/card.json", "w", encoding="utf-8") as file:
         json.dump(database.card("Counterspell"), file, ensure_ascii=False, indent=4)
 
