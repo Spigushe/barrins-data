@@ -10,6 +10,10 @@ from typing import List
 import requests
 from bs4 import BeautifulSoup
 
+from mtgdc_carddata import CardDatabase
+
+database = CardDatabase()
+
 
 class Deck:
     """Classe pour représenter l'objet Deck."""
@@ -81,11 +85,14 @@ class Deck:
                     if line.strip()
                 ]
 
-            # Remove leftover html encoding
-            for idx, carte in enumerate(self._mainboard):
-                if re.search("&amp;", carte):
-                    parts = re.split(" &amp; ", carte)
-                    self._mainboard[idx] = " & ".join(parts)
+            # Clean card names in case of encoding errors
+            lines = []
+            for line in self._mainboard:
+                tmp = line.split(" ", maxsplit=1)
+                tmp[1] = database.card(tmp[1])["name"]
+                lines.append(" ".join(tmp))
+
+            self._mainboard = lines
 
         return self._mainboard
 
