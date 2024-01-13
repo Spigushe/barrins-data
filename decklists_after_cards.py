@@ -7,7 +7,7 @@ from mtgdc_decklists import CompareLists, ImportDecks
 CARDS = ["Underworld Breach", "Stitcher's Supplier"]
 
 if __name__ == "__main__":
-    path = "output" + "".join(filter(str.isalpha, "".join(CARDS).lower()))
+    path = "output/" + "".join(filter(str.isalpha, "".join(CARDS).lower()))
 
     if not os.path.isdir("output"):
         os.mkdir("output")
