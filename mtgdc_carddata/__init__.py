@@ -1,7 +1,6 @@
 import gzip
 import json
 import os
-import re
 from datetime import datetime, timedelta
 
 import requests
