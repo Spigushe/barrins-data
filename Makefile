@@ -2,7 +2,7 @@
 
 update:
 	pip install --upgrade pip
-	pip install --upgrade -r requirements.txt
+	pip install --upgrade --upgrade-strategy eager -r requirements.txt
 
 scrap:
 	python -m mtgdc_scrapper
