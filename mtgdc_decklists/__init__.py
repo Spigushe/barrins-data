@@ -25,7 +25,7 @@ class ImportDecks:
         date_to: datetime = datetime.now(),
         **kwargs,
     ) -> None:
-        size = kwargs.get("size", 0)
+        t_size = kwargs.get("size", 0)
         commander = kwargs.get("commander", [])
         cards = kwargs.get("cards", [])
 
@@ -38,7 +38,7 @@ class ImportDecks:
                 continue
             if tournoi_date > date_to:
                 continue
-            if size and int(re.split(" ", tournoi["players"])[0]) < size:
+            if t_size and int(re.split(" ", tournoi["players"])[0]) < t_size:
                 continue
 
             for deck in tournoi["decks"]:
@@ -58,6 +58,7 @@ class ImportDecks:
                                 "date": tournoi_date,
                                 "decklist": tmp,
                                 "commander": czone,
+                                "player": deck["player"],
                                 # "cardlist": [card for (_, card) in tmp],
                             }
                         )
