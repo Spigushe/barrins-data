@@ -48,7 +48,8 @@ class CardDatabase:
         }
         self.sets = SetDatabase()
 
-    def card(self, card_name) -> dict:
+    def card(self, card_name: str) -> dict:
+        card_name = card_name.replace("&amp;", "")
         card_name = self._remove_accents(card_name)
 
         if card_name in self._clean_keys.keys():
@@ -70,6 +71,16 @@ class CardDatabase:
             self.sets.set(self.card(card_name)["firstPrinting"])["releaseDate"],
             "%Y-%m-%d",
         )
+
+    def str_command_zone(
+        self, commander: list, excluded_types: dict = {"Stickers", "Attraction"}
+    ):
+        filtered_cards = [
+            card
+            for card in commander
+            if not any(c_type in self.card(card)["type"] for c_type in excluded_types)
+        ]
+        return "++".join(sorted(filtered_cards))
 
     def _remove_accents(self, input_str):
         return "".join(char for char in unidecode(input_str) if char.isalpha()).lower()
