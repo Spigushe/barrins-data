@@ -96,7 +96,7 @@ class Aggregator:
     """
 
     def __init__(self, decklists: list[str], **kwargs) -> None:
-        self.ordre = kwargs.get("ordre", 1)
+        self.ordre = kwargs.get("ordre", kwargs.get("order", 1))
         self.size = kwargs.get("size", 100)
 
         self.decklists = [
