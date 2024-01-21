@@ -99,12 +99,14 @@ class Aggregator:
         self.ordre = kwargs.get("ordre", kwargs.get("order", 1))
         self.size = kwargs.get("size", 100)
 
+        use_banlist = kwargs.get("use_banlist", True)
+
         self.decklists = [
             [
                 f"{card} {i}"
                 for qty, card in deck
                 for i in range(int(qty))
-                if not BanlistCompiler().is_banned(card)
+                if not (BanlistCompiler().is_banned(card) and use_banlist)
             ]
             for deck in decklists
         ]
