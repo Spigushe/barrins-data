@@ -72,12 +72,14 @@ class ImportDecks:
                 if player_condition and commander_condition and cards_condition:
                     self.decks.append(
                         {
-                            "tournament_id": tournoi["id"],
-                            "deck_id": deck["deck_id"],
+                            "t_id": tournoi["id"],
+                            "t_size": int(tournoi["players"].split(" ")[0]),
                             "date": tournoi_date.strftime("%Y-%m-%d"),
-                            "decklist": tmp,
-                            "commander": czone,
+                            "deck_id": deck["deck_id"],
                             "player": deck["player"],
+                            "rank": deck["rank"],
+                            "commander": czone,
+                            "decklist": tmp,
                             "cardlist": [card for (_, card) in tmp],
                         }
                     )
@@ -98,6 +100,33 @@ class ImportDecks:
     @property
     def decklists(self) -> list:
         return [deck["decklist"] for deck in self.decks]
+
+    def palmares(self, output: str = ""):
+        results = defaultdict(list)
+
+        for deck in self.decks:
+            results[deck["player"]].append(
+                {
+                    "url": f"https://mtgtop8.com/event?e={deck['t_id']}&d={deck['deck_id']}",
+                    "commander": DATABASE.str_command_zone(deck["commander"], " / "),
+                    "date": deck["date"],
+                    "size": deck["t_size"],
+                    "rank": deck["rank"],
+                }
+            )
+
+        out_str = ["===== Barrin's Data Extraction =====\n"]
+        for player, result in results.items():
+            tmp_str = f"\n---------- JOUEUR {len(out_str)} ----------"
+            tmp_str += f"\nPlayer: {player}"
+            tmp_str += f"\nNb results: {len(result)}"
+            for reslt in result:
+                tmp_str += f"\n{reslt['date']} - {reslt['rank']} / {reslt['size']} "
+                tmp_str += f"- {reslt['commander']}"
+            out_str.append(tmp_str + "\n")
+
+        with open(output, "+w", encoding="utf-8") as file:
+            file.write("\n".join(out_str))
 
 
 class PlayerDatabase:
