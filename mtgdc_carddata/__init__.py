@@ -73,7 +73,10 @@ class CardDatabase:
         )
 
     def str_command_zone(
-        self, commander: list, excluded_types: dict = {"Stickers", "Attraction"}
+        self,
+        commander: list,
+        concat_symbol: str = "++",
+        excluded_types: dict = {"Stickers", "Attraction"},
     ):
         try:
             filtered_cards = [
@@ -84,7 +87,7 @@ class CardDatabase:
                     c_type in self.card(card)["type"] for c_type in excluded_types
                 )
             ]
-            return "++".join(sorted(filtered_cards))
+            return concat_symbol.join(sorted(filtered_cards))
 
         except KeyError:
             return "Unknown Command Zone"
