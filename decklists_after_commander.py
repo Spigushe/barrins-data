@@ -21,6 +21,7 @@ if __name__ == "__main__":
     print(".", "Loading decks")
     liste_decks = ImportDecks.from_directory("./mtgdc_decklists/decklists")
     liste_decks.load_decks(commander=[COMMANDER])
+    liste_decks.palmares(f"{path}/palmares.txt")
     print("\t", f"{len(liste_decks.decklists)} decks loaded")
 
     print(".", "PCA analysis and KMeans clustering")
