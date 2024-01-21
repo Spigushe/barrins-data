@@ -101,7 +101,7 @@ class ImportDecks:
     def decklists(self) -> list:
         return [deck["decklist"] for deck in self.decks]
 
-    def palmares(self, output: str = ""):
+    def palmares(self, output: str = "output/palmares.txt", use_url: bool = False):
         results = defaultdict(list)
 
         for deck in self.decks:
@@ -115,15 +115,20 @@ class ImportDecks:
                 }
             )
 
-        out_str = ["===== Barrin's Data Extraction =====\n"]
+        out_str = ["===== Barrin's Data Extraction ====="]
         for player, result in results.items():
             tmp_str = f"\n---------- JOUEUR {len(out_str)} ----------"
             tmp_str += f"\nPlayer: {player}"
             tmp_str += f"\nNb results: {len(result)}"
+            tmp_str += "\n----------"
+
             for reslt in result:
-                tmp_str += f"\n{reslt['date']} - {reslt['rank']} / {reslt['size']} "
-                tmp_str += f"- {reslt['commander']}"
-            out_str.append(tmp_str + "\n")
+                tmp_str += f"\n{reslt['date']}"
+                tmp_str += f" - {reslt['commander']}"
+                tmp_str += f" - {reslt['rank']} / {reslt['size']}"
+                tmp_str += f" - {reslt['url']}" if use_url else ""
+
+            out_str.append(tmp_str)
 
         with open(output, "+w", encoding="utf-8") as file:
             file.write("\n".join(out_str))
