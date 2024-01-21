@@ -75,12 +75,19 @@ class CardDatabase:
     def str_command_zone(
         self, commander: list, excluded_types: dict = {"Stickers", "Attraction"}
     ):
-        filtered_cards = [
-            card
-            for card in commander
-            if not any(c_type in self.card(card)["type"] for c_type in excluded_types)
-        ]
-        return "++".join(sorted(filtered_cards))
+        try:
+            filtered_cards = [
+                card
+                for card in commander
+                if card != "Unknown Card"
+                and not any(
+                    c_type in self.card(card)["type"] for c_type in excluded_types
+                )
+            ]
+            return "++".join(sorted(filtered_cards))
+
+        except KeyError:
+            return "Unknown Command Zone"
 
     def _remove_accents(self, input_str):
         return "".join(char for char in unidecode(input_str) if char.isalpha()).lower()

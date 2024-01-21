@@ -2,8 +2,15 @@ import glob
 import json
 import os
 import re
+from collections import defaultdict
 from datetime import datetime
 from difflib import HtmlDiff
+
+import textdistance
+
+from mtgdc_carddata import CardDatabase
+
+DATABASE = CardDatabase()
 
 
 def clean(string: str = "") -> str:
@@ -29,55 +36,153 @@ class ImportDecks:
         commander = kwargs.get("commander", [])
         cards = kwargs.get("cards", [])
 
+        player = kwargs.get("player", kwargs.get("alias", []))
+        if player:
+            p_database = PlayerDatabase(date_from=date_from, date_to=date_to)
+            player = p_database.check_aliases(player)
+
         for file in self.files:
             with open(file, "r", encoding="utf-8") as my_file:
                 tournoi = json.load(my_file)
 
             tournoi_date = datetime.strptime(tournoi["date"], "%d/%m/%y")
-            if tournoi_date < date_from:
+            if not (date_from <= tournoi_date <= date_to):
                 continue
-            if tournoi_date > date_to:
-                continue
-            if t_size and int(re.split(" ", tournoi["players"])[0]) < t_size:
+
+            if not (not t_size or int(re.split(" ", tournoi["players"])[0]) >= t_size):
                 continue
 
             for deck in tournoi["decks"]:
-                dlist = deck["decklist"]
                 czone = deck["commander"]
-                if self._check(czone, commander) and self._check(dlist + czone, cards):
-                    dlist.extend([f"1 {card}" for card in czone])
-                    tmp = [
-                        (int(card.split(" ")[0]), card.split(" ", maxsplit=1)[1])
-                        for card in deck["decklist"]
-                    ]
-                    if not any(["Unknown Card" in card for (_, card) in tmp]):
-                        self.decks.append(
-                            {
-                                "tournament_id": tournoi["id"],
-                                "deck_id": deck["deck_id"],
-                                "date": tournoi_date,
-                                "decklist": tmp,
-                                "commander": czone,
-                                "player": deck["player"],
-                                # "cardlist": [card for (_, card) in tmp],
-                            }
-                        )
+                dlist = deck["decklist"]
+                dlist.extend([f"1 {card}" for card in czone])
+                tmp = [
+                    (int(card.split(" ")[0]), card.split(" ", maxsplit=1)[1])
+                    for card in dlist
+                ]
+
+                player_condition = not player or deck["player"] in player
+                commander_condition = not commander or ImportDecks.list_check(
+                    deck["commander"], commander
+                )
+                cards_condition = not cards or ImportDecks.list_check(
+                    deck["decklist"] + deck["commander"], cards
+                )
+
+                if player_condition and commander_condition and cards_condition:
+                    self.decks.append(
+                        {
+                            "tournament_id": tournoi["id"],
+                            "deck_id": deck["deck_id"],
+                            "date": tournoi_date.strftime("%Y-%m-%d"),
+                            "decklist": tmp,
+                            "commander": czone,
+                            "player": deck["player"],
+                            "cardlist": [card for (_, card) in tmp],
+                        }
+                    )
 
     @staticmethod
-    def from_directory(directory_path):
+    def from_directory(directory_path: str = "mtgdc_decklists/decklists"):
         import_decks = ImportDecks()
         import_decks.files = sorted(glob.glob(os.path.join(directory_path, "*.json")))
         return import_decks
+
+    @staticmethod
+    def list_check(search_list: list, wanted: list) -> bool:
+        return len(wanted) == 0 or all(
+            any(clean(im).startswith(clean(wnt)) for im in search_list)
+            for wnt in wanted
+        )
 
     @property
     def decklists(self) -> list:
         return [deck["decklist"] for deck in self.decks]
 
-    def _check(self, search_list: list, wanted: list) -> bool:
-        return len(wanted) == 0 or all(
-            any(clean(im).startswith(clean(wnt)) for im in search_list)
-            for wnt in wanted
+
+class PlayerDatabase:
+    def __init__(
+        self,
+        directory: str = "mtgdc_decklists/decklists",
+        date_from: datetime = datetime(2016, 11, 11),
+        date_to: datetime = datetime.now(),
+    ) -> None:
+        self.liste_decks = ImportDecks.from_directory(directory)
+        self.liste_decks.load_decks(date_from, date_to)
+
+        self.players_info = defaultdict(
+            lambda: {"nb_top": 0, "alias": list(), "deck": defaultdict(int)}
         )
+
+        self.player_entries = defaultdict(str)
+
+        self._build_players_info()
+
+    def check_aliases(self, player: str):
+        players_names = list(self.players_info.keys())
+        players_names = sorted(
+            players_names, key=lambda x: len(x.split()), reverse=True
+        )
+
+        # Step 1: Vérifier les correspondances directes
+        similarities = []
+        for person2 in players_names:
+            if PlayerDatabase.evaluate_similarity(player, person2):
+                similarities.append(person2)
+
+        # Step 2: Vérifier si les noms identifiés retournent d'autres résultats
+        tmp_combinations = [
+            (person1, person2)
+            for person1 in similarities
+            for person2 in players_names
+            if person2 not in similarities
+        ]
+        for person1, person2 in tmp_combinations:
+            if PlayerDatabase.evaluate_similarity(person1, person2):
+                similarities.append(person2)
+
+        return list(set(similarities))
+
+    @staticmethod
+    def evaluate_similarity(entry1, entry2):
+        similarity = PlayerDatabase.calculate_similarity(entry1, entry2)
+        apost = (
+            ("'" in entry1 or entry2)
+            or ('"' in entry1 or entry2)
+            or ("(" in entry1 or entry2)
+        )
+        return any(
+            [
+                similarity > 0.85,
+                apost and PlayerDatabase.same_with_alias(entry1, entry2),
+            ]
+        )
+
+    @staticmethod
+    def calculate_similarity(entry1, entry2):
+        return 1 - textdistance.damerau_levenshtein.normalized_distance(entry1, entry2)
+
+    @staticmethod
+    def same_with_alias(entry1, entry2):
+        entry1 = [
+            "".join(char.lower() for char in word if char.isalpha())
+            for word in entry1.split()
+        ]
+        entry2 = [
+            "".join(char.lower() for char in word if char.isalpha())
+            for word in entry2.split()
+        ]
+
+        return all(word in entry2 for word in entry1) or all(
+            word in entry1 for word in entry2
+        )
+
+    def _build_players_info(self):
+        for deck in self.liste_decks.decks:
+            commander = DATABASE.str_command_zone(deck["commander"])
+            player = deck["player"]
+            self.players_info[player]["nb_top"] += 1
+            self.players_info[player]["deck"][commander] += 1
 
 
 class CompareLists:
