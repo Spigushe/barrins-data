@@ -38,7 +38,7 @@ class ImportDecks:
 
         player = kwargs.get("player", kwargs.get("alias", []))
         if player:
-            p_database = PlayerDatabase(date_from=date_from, date_to=date_to)
+            p_database = PlayerDatabase()
             player = p_database.check_aliases(player)
 
         for file in self.files:
@@ -104,7 +104,8 @@ class PlayerDatabase:
     def __init__(
         self,
         directory: str = "mtgdc_decklists/decklists",
-        date_from: datetime = datetime(2016, 11, 11),
+        date_from: datetime = datetime(1993, 8, 5),  # Limited Edition Alpha Release
+        # date_from: datetime = datetime(2016, 11, 11),  # 20PV official date change
         date_to: datetime = datetime.now(),
     ) -> None:
         self.liste_decks = ImportDecks.from_directory(directory)
