@@ -81,6 +81,7 @@ class ImportDecks:
                             "commander": czone,
                             "decklist": tmp,
                             "cardlist": [card for (_, card) in tmp],
+                            "url": f"https://mtgtop8.com/event?e={tournoi['id']}&d={deck['deck_id']}",
                         }
                     )
 

@@ -4,7 +4,7 @@ from mtgdc_aggregator import Aggregator
 from mtgdc_clustering import KMeansACP
 from mtgdc_decklists import CompareLists, ImportDecks
 
-COMMANDER = "Sheoldred, the Apocalypse"
+COMMANDER = "Sai, Master Thopterist"
 
 if __name__ == "__main__":
     path = "output/" + "".join(filter(str.isalpha, COMMANDER.lower()))
@@ -25,7 +25,8 @@ if __name__ == "__main__":
     print("\t", f"{len(liste_decks.decklists)} decks loaded")
 
     print(".", "PCA analysis and KMeans clustering")
-    kmeans_with_pca = KMeansACP(liste_decks.decklists, max_clusters=5 + 1)
+    kmeans_with_pca = KMeansACP(liste_decks.decklists, max_clusters=3 + 1)
+    # kmeans_with_pca = KMeansACP(liste_decks.decklists, n_clusters=2)
     kmeans_with_pca.plot(output=f"{path}/result_plot.pdf")
     print("\t", f"KMeans: {kmeans_with_pca.nb_clusters} clusters")
 
@@ -40,7 +41,7 @@ if __name__ == "__main__":
     print(".", "Decks per cluster and default decklist")
     for k in sorted(list(set(kmeans_with_pca.labels))):
         decks_label = [deck for deck, _ in kmeans_with_pca.decks_by_label(k)]
-        aggregate = Aggregator(decks_label)
+        aggregate = Aggregator(decks_label, ordre=3)
         aggregate.aggregate(action=f"Cluster {k+1}")
         aggregate.export(f"{path}/kmeans_cluster_{k+1}.txt", title=f"Cluster {k+1}")
 

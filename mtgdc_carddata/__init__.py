@@ -46,6 +46,17 @@ class CardDatabase:
         self._clean_keys = {
             self._remove_accents(card): card for card in self.atomic_cards.keys()
         }
+        self.commanders_list = sorted(
+            list(
+                set(
+                    [
+                        card_name
+                        for _, card_name in self._clean_keys.items()
+                        if CardDatabase._is_commander(self.atomic_cards[card_name][0])
+                    ]
+                )
+            )
+        )
         self.sets = SetDatabase()
 
     def card(self, card_name: str) -> dict:
@@ -71,6 +82,29 @@ class CardDatabase:
             self.sets.set(self.card(card_name)["firstPrinting"])["releaseDate"],
             "%Y-%m-%d",
         )
+
+    @staticmethod
+    def _is_commander(card) -> bool:
+        try:
+            if card["name"].startswith("A-"):
+                return False
+
+            if "leadershipSkills" not in card.keys():
+                return False
+
+            if not card["leadershipSkills"]["commander"]:
+                return False
+
+            if (
+                "duel" in card["legalities"].keys()
+                and card["legalities"]["duel"] == "Restricted"
+            ):
+                return False
+
+            return True
+        except:
+            print("Error", card)
+            return False
 
     def str_command_zone(
         self,
